@@ -1,0 +1,16 @@
+#signIn-container {
+    border-top: 1px solid #efefef;
+    border-right: 1px solid #efefef;
+    border-bottom: 1px solid #efefef;
+}
+
+.boxshadow {
+    box-shadow: 0 0 5px #ccc;
+}
+
+.center {
+    text-align: center;
+    
+    margin: inherit auto;
+}
+
