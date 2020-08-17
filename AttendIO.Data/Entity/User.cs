@@ -24,5 +24,7 @@ namespace AttendIO.Data.Entity
 
         public ICollection<TimeLog> TimeLogs { get; set; }
         public ICollection<ModifiedLog> ModifiedLogs { get; set; }
+
+        public UserSecurity UserSecurity { get; set; }
     }
 }

@@ -20,7 +20,7 @@ namespace AttendIO.Vue
         private static Uri DevelopmentServerEndpoint { get; } = new Uri($"http://localhost:{Port}");
         private static TimeSpan Timeout { get; } = TimeSpan.FromSeconds(60);
 
-        private static string DoneMessage { get; } = "DONE  Compiled successfully in";
+        private static string DoneMessage { get; } = "DONE Compiled successfully in";
 
         public static void UseVueDevelopmentServer(this ISpaBuilder spa)
         {

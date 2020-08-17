@@ -9,6 +9,7 @@ namespace AttendIO.Data.Entity
     {
         public string Name { get; set; }
         public string Code { get; set; }
+        public int Sequence { get; set; }
         public ICollection<TimeLog> TimeLogs { get; set; }
     }
 }

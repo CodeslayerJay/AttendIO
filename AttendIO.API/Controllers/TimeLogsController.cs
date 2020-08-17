@@ -1,4 +1,8 @@
 ﻿using AttendIO.Data;
+using AttendIO.Services.Common;
+using AttendIO.Services.Managers;
+using AttendIO.Services.Models;
+using AttendIO.Services.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,21 +13,21 @@ namespace AttendIO.API.Controllers
 {
     public class TimeLogsController : ApiControllerBase
     {
-        private readonly AppDbContext _dbContext;
+        private readonly TimeLogServiceManager _manager;
 
-        public TimeLogsController(AppDbContext dbContext)
+        public TimeLogsController(TimeLogServiceManager manager)
         {
-            _dbContext = dbContext;
+            _manager = manager;
+            
         }
 
         [HttpGet]
-        [Route("GetLogs")]
-        public IActionResult GetLogs()
+        [Route("GetLogs/{username}")]
+        public IActionResult GetLogs(string username)
         {
             try
             {
-                var test = "This is a test";
-                return Ok(test);
+                return Ok(_manager.TimeLogService.GetLogs(username));
             }
             catch(Exception ex)
             {
@@ -32,27 +36,18 @@ namespace AttendIO.API.Controllers
         }
 
         [HttpPost]
-        [Route("LogTime")]
-        public IActionResult LogTime([FromBody]LogTimeBindingModel param)
+        [Route("SaveLog")]
+        public IActionResult SaveLog([FromBody]TimeLogEditModel model)
         {
             try
             {
-                
-                return CreatedAtAction(nameof(LogTime), param);
+                return Ok(_manager.TimeLogService.SaveLog(model));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
 
-
-        public class LogTimeBindingModel
-        {
-            public string Username { get; set; }
-            public string Password { get; set; }
-            public string LogType { get; set; }
-            public DateTime LogTime { get; set; } = DateTime.Now;
-        }
     }
 }

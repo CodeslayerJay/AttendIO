@@ -33,7 +33,13 @@ namespace AttendIO.Data.DbConfig
             var e = builder.Entity<LogType>();
             e.Property(x => x.Code).IsRequired(false).HasMaxLength(10);
             e.Property(x => x.Name).IsRequired(true).HasMaxLength(20);
+            
             e.HasMany(x => x.TimeLogs).WithOne(x => x.LogType).HasForeignKey(x => x.LogTypeId).OnDelete(DeleteBehavior.NoAction);
+
+
+            e.HasData(new LogType { Id = 1, Code = "CLOCKIN", Name = "Clock In", Sequence = 0 });
+            e.HasData(new LogType { Id = 2, Code = "BREAK", Name = "Break", Sequence = 1 });
+            e.HasData(new LogType { Id = 3, Code = "CLOCKOUT", Name = "Clock Out", Sequence = 2 });
         }
 
         private static void ConfigureTimeLog(ModelBuilder builder)
