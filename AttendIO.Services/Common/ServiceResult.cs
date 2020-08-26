@@ -18,7 +18,7 @@ namespace AttendIO.Services.Common
 
         public List<TEntity> ResultData { get; set; }
         
-
+        public string StatusMessage { get; set; }
         public bool IsSuccess => ServiceErrors.Any() == false;
 
         public void AddError(string message)

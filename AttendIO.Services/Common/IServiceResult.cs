@@ -7,9 +7,9 @@ namespace AttendIO.Services.Common
     {
         bool IsSuccess { get; }
         ICollection<string> ServiceErrors { get; }
-        
-        //TEntity Entity { get; set; }
 
+        //TEntity Entity { get; set; }
+        public string StatusMessage { get; set; }
         List<TEntity> ResultData { get; set; }
         void AddError(string message);
     }

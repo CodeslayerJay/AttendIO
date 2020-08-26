@@ -36,11 +36,21 @@ namespace AttendIO.Services.ServiceActions
             {
                 var timeLog = _mapper.Map<TimeLog>(timeLogEditModel);
                 timeLog.UserId = user.Id;
-                timeLog.LogTypeId = GetLogTypeId(timeLogEditModel.Username);
+
+                var logType = (from t in AppDbContext.TimeLogs
+                                join u in AppDbContext.Users on t.UserId equals u.Id
+                                join lt in AppDbContext.LogTypes on t.LogTypeId equals lt.Id
+                                from next in AppDbContext.LogTypes.Where(x => x.Sequence > lt.Sequence).OrderBy(x => x.Sequence).Take(1).DefaultIfEmpty()
+                                from begin in AppDbContext.LogTypes.Where(x => x.Sequence == 1).Take(1).DefaultIfEmpty()
+                                where u.Username == timeLogEditModel.Username
+                                select new { t.CreatedAt, LogTypeId = next != null ? next.Id : begin.Id, Name = next != null ? next.Name : begin.Name })
+                               .OrderByDescending(x => x.CreatedAt).FirstOrDefault();
+
+                timeLog.LogTypeId = logType.LogTypeId;
                 AppDbContext.TimeLogs.Add(timeLog);
 
                 AppDbContext.SaveChanges();
-
+                ServiceResult.StatusMessage = "Stamp saved as " + logType.Name;  
                 ServiceResult.ResultData.Add(timeLog);
             } 
             else
@@ -62,28 +72,6 @@ namespace AttendIO.Services.ServiceActions
             }
         }
 
-        private int GetLogTypeId(string username)
-        {
-            var nextLogType = (from t in AppDbContext.TimeLogs
-                               join u in AppDbContext.Users on t.UserId equals u.Id
-                               join lt in AppDbContext.LogTypes on t.LogTypeId equals lt.Id
-                               from next in AppDbContext.LogTypes.Where(x => x.Sequence > lt.Sequence).OrderBy(x => x.Sequence).Take(1).DefaultIfEmpty()
-                               from begin in AppDbContext.LogTypes.Where(x => x.Sequence == 1).Take(1).DefaultIfEmpty()
-                               where u.Username == username
-                               select new { t.CreatedAt, LogTypeId = next != null ? next.Id : begin.Id }).OrderByDescending(x => x.CreatedAt).FirstOrDefault();
-
-            //var currentLogType = (from t in AppDbContext.TimeLogs
-            //                  join u in AppDbContext.Users on t.UserId equals u.Id
-            //                  join lt in AppDbContext.LogTypes on t.LogTypeId equals lt.Id
-            //                  where u.Username == username
-            //                  select new { lt.Id, lt.Sequence, t.CreatedAt }).OrderByDescending(x => x.CreatedAt).FirstOrDefault();
-
-            //var nextLogType = AppDbContext.LogTypes.Where(x => x.Sequence > currentLogType.Sequence).OrderBy(x => x.Sequence).FirstOrDefault();
-
-
-            return nextLogType != null ? nextLogType.LogTypeId : 0;
-
-        }
 
     }
 }
